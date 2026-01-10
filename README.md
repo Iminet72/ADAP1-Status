@@ -67,6 +67,14 @@ The integration expects the ADA-P1 Meter to provide a JSON response at `http://<
 
 For issues and feature requests, please use the [GitHub issue tracker](https://github.com/Iminet72/adaP1Status/issues).
 
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
 ## License
 
-This project is open source.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
