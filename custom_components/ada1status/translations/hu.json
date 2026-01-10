@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADA-P1 Mérő hozzáadása",
+        "description": "Állítsa be az ADA-P1 Mérő integrációt",
+        "data": {
+          "host": "Eszköz IP címe vagy hostname"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nem sikerült csatlakozni az eszközhöz",
+      "unknown": "Váratlan hiba történt"
+    },
+    "abort": {
+      "already_configured": "Az eszköz már konfigurálva van"
+    }
+  }
+}
