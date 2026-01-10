@@ -13,30 +13,25 @@ SENSOR_TYPES = {
         "name": "Voltage",
         "unit": "V",
         "icon": "mdi:flash",
-        "device_class": "voltage",
     },
     "current": {
         "name": "Current",
         "unit": "A",
         "icon": "mdi:current-ac",
-        "device_class": "current",
     },
     "power": {
         "name": "Power",
         "unit": "W",
-        "icon": "mdi:lightning-bolt",
-        "device_class": "power",
+        "icon": "mdi:power-plug",
     },
     "energy": {
         "name": "Energy",
         "unit": "kWh",
-        "icon": "mdi:counter",
-        "device_class": "energy",
+        "icon": "mdi:lightning-bolt",
     },
     "frequency": {
         "name": "Frequency",
         "unit": "Hz",
         "icon": "mdi:sine-wave",
-        "device_class": "frequency",
     },
 }

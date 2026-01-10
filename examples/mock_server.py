@@ -1,65 +1,64 @@
 #!/usr/bin/env python3
-"""Mock ADA-P1 Meter HTTP server for testing the Ada1Status integration."""
+"""
+Simple HTTP server to simulate ADA-P1 Meter responses.
+Use this for testing the Ada1Status integration without a real device.
+
+Usage:
+    python3 examples/mock_server.py
+
+Then configure the integration with: http://localhost:8080
+"""
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import json
 import random
+import time
 
 
-class MockHandler(BaseHTTPRequestHandler):
-    """Handle HTTP requests and return mock sensor data."""
+class MockADAP1Handler(BaseHTTPRequestHandler):
+    """Handler for simulating ADA-P1 Meter HTTP responses."""
 
     def do_GET(self):
         """Handle GET requests."""
-        if self.path == '/status':
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            
-            # Generate realistic mock data with some variation
-            data = {
-                "voltage": round(230.0 + random.uniform(-5, 5), 2),
-                "current": round(5.0 + random.uniform(-1, 3), 2),
-                "power": round(1150.0 + random.uniform(-100, 200), 2),
-                "energy": round(1234.5 + random.uniform(0, 1), 2),
-                "frequency": round(50.0 + random.uniform(-0.1, 0.1), 2)
-            }
-            
-            self.wfile.write(json.dumps(data).encode())
-            print(f"Sent data: {data}")
-        else:
-            self.send_response(404)
-            self.send_header('Content-type', 'text/plain')
-            self.end_headers()
-            self.wfile.write(b'Not found')
-    
+        # Generate mock data with some variation
+        voltage = 230.0 + random.uniform(-5, 5)
+        current = 5.0 + random.uniform(-1, 1)
+        power = voltage * current
+        # Energy increases over time
+        energy = 100.0 + (time.time() % 1000) / 10
+        frequency = 50.0 + random.uniform(-0.1, 0.1)
+
+        # Format response
+        response = f"""voltage: {voltage:.1f} V
+current: {current:.2f} A
+power: {power:.1f} W
+energy: {energy:.2f} kWh
+frequency: {frequency:.2f} Hz
+"""
+
+        # Send response
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(response.encode())
+
     def log_message(self, format, *args):
-        """Log HTTP requests."""
-        print(f"Request: {format % args}")
+        """Log requests."""
+        print(f"[{self.log_date_time_string()}] {format % args}")
 
 
-def main():
-    """Start the mock server."""
-    server_address = ('0.0.0.0', 8080)
-    httpd = HTTPServer(server_address, MockHandler)
-    
-    print('=' * 60)
-    print('Mock ADA-P1 Meter server running on port 8080')
-    print('=' * 60)
-    print('Available endpoints:')
-    print('  GET http://localhost:8080/status')
-    print('')
-    print('Use this address in Home Assistant configuration:')
-    print('  <your-ip>:8080')
-    print('=' * 60)
-    print('')
-    
+def run_server(port=8080):
+    """Run the mock server."""
+    server_address = ('', port)
+    httpd = HTTPServer(server_address, MockADAP1Handler)
+    print(f"Mock ADA-P1 Meter server running on http://localhost:{port}")
+    print("Configure Home Assistant integration with: http://localhost:8080")
+    print("Press Ctrl+C to stop")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print('\nShutting down server...')
+        print("\nShutting down server...")
         httpd.shutdown()
 
 
 if __name__ == '__main__':
-    main()
+    run_server()

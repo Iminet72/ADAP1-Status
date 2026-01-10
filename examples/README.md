@@ -1,54 +1,53 @@
-# Example configuration for testing the integration
+# Examples
 
-This directory contains example files for testing the Ada1Status integration.
+This directory contains example scripts and utilities for testing the Ada1Status integration.
 
-## Testing the Integration
+## Mock Server
 
-Since the integration connects to a real ADA-P1 Meter device, you can test it by:
+`mock_server.py` - A simple HTTP server that simulates an ADA-P1 Meter device.
 
-1. Setting up a mock HTTP server that returns the expected JSON format
-2. Configuring the integration to point to your test server
+### Usage
 
-### Mock Server Example
-
-You can create a simple mock server using Python:
-
-```python
-from http.server import HTTPServer, BaseHTTPRequestHandler
-import json
-
-class MockHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == '/status':
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            
-            data = {
-                "voltage": 230.5,
-                "current": 5.2,
-                "power": 1198.6,
-                "energy": 1234.5,
-                "frequency": 50.0
-            }
-            
-            self.wfile.write(json.dumps(data).encode())
-        else:
-            self.send_response(404)
-            self.end_headers()
-    
-    def log_message(self, format, *args):
-        pass  # Suppress logging
-
-if __name__ == '__main__':
-    server = HTTPServer(('0.0.0.0', 8080), MockHandler)
-    print('Mock ADA-P1 Meter server running on port 8080...')
-    server.serve_forever()
-```
-
-Save this as `mock_server.py` and run it with:
 ```bash
-python3 mock_server.py
+python3 examples/mock_server.py
 ```
 
-Then configure the integration in Home Assistant to connect to `<your-ip>:8080`.
+This will start a server on `http://localhost:8080` that returns simulated sensor data.
+
+You can then add the integration in Home Assistant using the URL: `http://localhost:8080` (or `http://<your-ha-ip>:8080` if running on the same machine as Home Assistant).
+
+### What it does
+
+- Responds to HTTP GET requests with simulated sensor data
+- Returns realistic values for voltage, current, power, energy, and frequency
+- Values change slightly on each request to simulate real measurements
+- Energy value increases over time
+- Logs all requests to the console
+
+### Testing scenarios
+
+You can modify the script to test different scenarios:
+
+1. **Connection errors**: Stop the server to test unavailable device handling
+2. **Invalid data**: Modify the response format to test parsing
+3. **Timeout**: Add delays in the `do_GET` method to test timeout handling
+4. **Different values**: Adjust the random ranges or base values
+
+### Example output
+
+```
+Mock ADA-P1 Meter server running on http://localhost:8080
+Configure Home Assistant integration with: http://localhost:8080
+Press Ctrl+C to stop
+[10/Jan/2026 17:30:45] GET / HTTP/1.1 200 -
+[10/Jan/2026 17:31:15] GET / HTTP/1.1 200 -
+```
+
+The server will respond with data like:
+```
+voltage: 232.3 V
+current: 5.45 A
+power: 1266.1 W
+energy: 123.45 kWh
+frequency: 49.98 Hz
+```
