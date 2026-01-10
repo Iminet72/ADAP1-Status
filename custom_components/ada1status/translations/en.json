@@ -3,18 +3,31 @@
     "step": {
       "user": {
         "title": "Configure ADA-P1 Meter",
-        "description": "Enter the URL of your ADA-P1 Meter device",
+        "description": "Enter the connection details for your ADA-P1 Meter device",
         "data": {
-          "host": "Device URL (e.g., http://192.168.1.100)"
+          "host": "Host (IP address or hostname)",
+          "port": "Port",
+          "name": "Name (optional)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect to the device. Please check the URL and ensure the device is accessible.",
+      "cannot_connect": "Cannot connect to the device. Please check the host and port settings.",
       "unknown": "An unexpected error occurred"
     },
     "abort": {
       "already_configured": "This device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure ADA-P1 Meter Options",
+        "description": "Configure polling interval for the ADA-P1 Meter",
+        "data": {
+          "scan_interval": "Scan interval (seconds, 10-300)"
+        }
+      }
     }
   }
 }

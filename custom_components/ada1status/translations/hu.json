@@ -3,18 +3,31 @@
     "step": {
       "user": {
         "title": "ADA-P1 Mérő beállítása",
-        "description": "Add meg az ADA-P1 Mérő eszköz URL címét",
+        "description": "Add meg az ADA-P1 Mérő eszköz kapcsolódási adatait",
         "data": {
-          "host": "Eszköz URL (pl.: http://192.168.1.100)"
+          "host": "Host (IP cím vagy hostnév)",
+          "port": "Port",
+          "name": "Név (opcionális)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Nem sikerült csatlakozni az eszközhöz. Ellenőrizd az URL-t és győződj meg róla, hogy az eszköz elérhető.",
+      "cannot_connect": "Nem sikerült csatlakozni az eszközhöz. Ellenőrizd a host és port beállításokat.",
       "unknown": "Váratlan hiba történt"
     },
     "abort": {
       "already_configured": "Ez az eszköz már be van állítva"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ADA-P1 Mérő opciók beállítása",
+        "description": "Lekérdezési időköz beállítása az ADA-P1 Mérőhöz",
+        "data": {
+          "scan_interval": "Lekérdezési időköz (másodperc, 10-300)"
+        }
+      }
     }
   }
 }
