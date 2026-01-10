@@ -1,26 +1,26 @@
 """Sensor platform for Ada1Status integration."""
+from __future__ import annotations
+
 import logging
-from datetime import timedelta
+from typing import Any
 
-import aiohttp
-
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-    UpdateFailed,
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+from . import Ada1StatusDataUpdateCoordinator
+from .const import (
+    DOMAIN,
+    DEFAULT_NAME,
+    TEXT_SENSOR_TYPES,
+    NUMERIC_SENSOR_TYPES,
 )
 
-from .const import DOMAIN, DEFAULT_NAME, DEFAULT_SCAN_INTERVAL, SENSOR_TYPES
-
 _LOGGER = logging.getLogger(__name__)
-
-SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL)
 
 
 async def async_setup_entry(
@@ -29,116 +29,132 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Ada1Status sensors from a config entry."""
-    host = config_entry.data[CONF_HOST]
+    coordinator: Ada1StatusDataUpdateCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ]
     
-    coordinator = Ada1StatusCoordinator(hass, host)
-    await coordinator.async_config_entry_first_refresh()
-
-    entities = []
-    for sensor_type in SENSOR_TYPES:
-        entities.append(Ada1StatusSensor(coordinator, sensor_type, config_entry.entry_id))
-
+    entities: list[SensorEntity] = []
+    
+    # Add text sensors
+    for sensor_key in TEXT_SENSOR_TYPES:
+        entities.append(Ada1StatusTextSensor(coordinator, sensor_key, config_entry))
+    
+    # Add numeric sensors
+    for sensor_key in NUMERIC_SENSOR_TYPES:
+        entities.append(Ada1StatusNumericSensor(coordinator, sensor_key, config_entry))
+    
     async_add_entities(entities)
 
 
-class Ada1StatusCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching Ada1Status data."""
-
-    def __init__(self, hass: HomeAssistant, host: str) -> None:
-        """Initialize."""
-        self.host = host
-        self.session = async_get_clientsession(hass)
-        
-        super().__init__(
-            hass,
-            _LOGGER,
-            name=DOMAIN,
-            update_interval=SCAN_INTERVAL,
-        )
-
-    async def _async_update_data(self):
-        """Fetch data from ADA-P1 Meter."""
-        try:
-            async with self.session.get(
-                self.host, timeout=aiohttp.ClientTimeout(total=10)
-            ) as response:
-                if response.status != 200:
-                    raise UpdateFailed(f"HTTP {response.status}")
-                
-                text = await response.text()
-                
-                # Parse the data from the response
-                # This is a simple parser that looks for key-value pairs
-                data = {}
-                for line in text.split('\n'):
-                    line = line.strip()
-                    if ':' in line:
-                        key, value = line.split(':', 1)
-                        key = key.strip().lower()
-                        value = value.strip()
-                        
-                        # Try to convert to float
-                        try:
-                            # Remove units if present
-                            value_clean = value.split()[0] if ' ' in value else value
-                            data[key] = float(value_clean)
-                        except (ValueError, IndexError):
-                            data[key] = value
-                
-                return data
-                
-        except aiohttp.ClientError as err:
-            raise UpdateFailed(f"Error communicating with API: {err}") from err
-
-
-class Ada1StatusSensor(CoordinatorEntity, SensorEntity):
-    """Representation of an Ada1Status sensor."""
-
+class Ada1StatusTextSensor(CoordinatorEntity[Ada1StatusDataUpdateCoordinator], SensorEntity):
+    """Representation of an Ada1Status text sensor."""
+    
     def __init__(
         self,
-        coordinator: Ada1StatusCoordinator,
-        sensor_type: str,
-        entry_id: str,
+        coordinator: Ada1StatusDataUpdateCoordinator,
+        sensor_key: str,
+        config_entry: ConfigEntry,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
-        self._sensor_type = sensor_type
-        self._attr_name = f"{DEFAULT_NAME} {SENSOR_TYPES[sensor_type]['name']}"
-        self._attr_unique_id = f"{entry_id}_{sensor_type}"
-        self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type]["unit"]
-        self._attr_icon = SENSOR_TYPES[sensor_type]["icon"]
+        self._sensor_key = sensor_key
+        self._config_entry = config_entry
         
-        # Set device class and state class based on sensor type
-        if sensor_type == "power":
-            self._attr_device_class = SensorDeviceClass.POWER
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif sensor_type == "energy":
-            self._attr_device_class = SensorDeviceClass.ENERGY
-            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
-        elif sensor_type == "voltage":
-            self._attr_device_class = SensorDeviceClass.VOLTAGE
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif sensor_type == "current":
-            self._attr_device_class = SensorDeviceClass.CURRENT
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif sensor_type == "frequency":
-            self._attr_device_class = SensorDeviceClass.FREQUENCY
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-
+        sensor_info = TEXT_SENSOR_TYPES[sensor_key]
+        self._attr_name = f"{DEFAULT_NAME} {sensor_info['name']}"
+        self._attr_icon = sensor_info["icon"]
+        
+        # Get hostname from coordinator data for unique_id and device info
+        hostname = self._get_hostname()
+        self._attr_unique_id = f"{hostname}_{sensor_key}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, hostname)},
+            name=DEFAULT_NAME,
+            manufacturer="ADA",
+            model="ADA-P1Meter",
+        )
+    
+    def _get_hostname(self) -> str:
+        """Get hostname from coordinator data or fall back to host."""
+        if self.coordinator.data and "hostname" in self.coordinator.data:
+            return str(self.coordinator.data["hostname"])
+        return self._config_entry.data[CONF_HOST]
+    
     @property
-    def native_value(self):
+    def native_value(self) -> str | None:
         """Return the state of the sensor."""
         if self.coordinator.data is None:
             return None
         
-        # Try to find the value in the coordinator data
-        # Look for keys that match the sensor type
-        for key in self.coordinator.data:
-            if self._sensor_type in key:
-                return self.coordinator.data[key]
-        
-        return None
+        value = self.coordinator.data.get(self._sensor_key)
+        return str(value) if value is not None else None
+    
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return self.coordinator.last_update_success
 
+
+class Ada1StatusNumericSensor(CoordinatorEntity[Ada1StatusDataUpdateCoordinator], SensorEntity):
+    """Representation of an Ada1Status numeric sensor."""
+    
+    def __init__(
+        self,
+        coordinator: Ada1StatusDataUpdateCoordinator,
+        sensor_key: str,
+        config_entry: ConfigEntry,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self._sensor_key = sensor_key
+        self._config_entry = config_entry
+        
+        sensor_info = NUMERIC_SENSOR_TYPES[sensor_key]
+        self._attr_name = f"{DEFAULT_NAME} {sensor_info['name']}"
+        self._attr_native_unit_of_measurement = sensor_info["unit"]
+        self._attr_device_class = sensor_info["device_class"]
+        self._attr_state_class = sensor_info["state_class"]
+        self._attr_icon = sensor_info["icon"]
+        
+        # Get hostname from coordinator data for unique_id and device info
+        hostname = self._get_hostname()
+        self._attr_unique_id = f"{hostname}_{sensor_key}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, hostname)},
+            name=DEFAULT_NAME,
+            manufacturer="ADA",
+            model="ADA-P1Meter",
+        )
+    
+    def _get_hostname(self) -> str:
+        """Get hostname from coordinator data or fall back to host."""
+        if self.coordinator.data and "hostname" in self.coordinator.data:
+            return str(self.coordinator.data["hostname"])
+        return self._config_entry.data[CONF_HOST]
+    
+    @property
+    def native_value(self) -> float | int | None:
+        """Return the state of the sensor."""
+        if self.coordinator.data is None:
+            return None
+        
+        value = self.coordinator.data.get(self._sensor_key)
+        if value is None:
+            return None
+        
+        try:
+            # Try to convert to numeric type
+            if isinstance(value, (int, float)):
+                return value
+            return float(value)
+        except (ValueError, TypeError):
+            _LOGGER.warning(
+                "Could not convert value '%s' for sensor '%s' to number",
+                value,
+                self._sensor_key,
+            )
+            return None
+    
     @property
     def available(self) -> bool:
         """Return if entity is available."""
