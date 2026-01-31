@@ -13,6 +13,10 @@ Ez egy egyedi Home Assistant integráció az ADA-P1 Mérő eszközhöz. HTTP-n k
 - Helyi lekérdezés - nincs szükség felhő kapcsolatra
 - Átfogó hiba- és kivételkezelés
 - Eszköz információk és azonosítók a több eszköz támogatásához
+  
+
+  <img width="457" height="720" alt="kép" src="https://github.com/user-attachments/assets/afe28a30-e86f-449f-bf8d-7a7b165d0510" />
+
 
 ## Telepítés
 
