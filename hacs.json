@@ -1,5 +1,5 @@
 {
-  "name": "Ada1Status",
+  "name": "Adap1Status",
   "render_readme": true,
   "domains": ["sensor"],
   "iot_class": "Local Polling",

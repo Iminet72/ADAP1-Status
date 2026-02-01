@@ -1,4 +1,4 @@
-# Ada1Status - Home Assistant Integráció
+# Adap1Status - Home Assistant Integráció
 
 Ez egy egyedi Home Assistant integráció az ADA-P1 Mérő eszközhöz. HTTP-n keresztül kéri le az eszköz státusz információit JSON formátumban és jeleníti meg azokat szenzorként a Home Assistant-ben.
 
@@ -22,12 +22,12 @@ Ez egy egyedi Home Assistant integráció az ADA-P1 Mérő eszközhöz. HTTP-n k
 
 ### Manuális telepítés
 
-1. Másold a `custom_components/ada1status` mappát a Home Assistant `custom_components` könyvtárába
+1. Másold a `custom_components/adap1status` mappát a Home Assistant `custom_components` könyvtárába
 2. Indítsd újra a Home Assistant-et
 3. Add hozzá az integrációt a felhasználói felületen keresztül:
    - Menj a Beállítások → Eszközök és szolgáltatások menüpontba
    - Kattints a "+ Integráció hozzáadása" gombra
-   - Keress rá az "Ada1Status" kifejezésre
+   - Keress rá az "Adap1Status" kifejezésre
    - Add meg az ADA-P1 Mérő eszköz kapcsolódási adatait:
      - **Host**: IP cím vagy hostnév (pl.: `192.168.1.100`)
      - **Port**: Port szám (alapértelmezett: `8989`)
@@ -60,7 +60,7 @@ Az integráció a Home Assistant felhasználói felületén keresztül konfigur�
 Az integráció hozzáadása után további opciókat állíthatsz be:
 
 1. Menj a Beállítások → Eszközök és szolgáltatások menüpontba
-2. Keresd meg az Ada1Status integrációt
+2. Keresd meg az Adap1Status integrációt
 3. Kattints az "Opciók" gombra
 4. Állítsd be:
    - **Lekérdezési időköz**: Milyen gyakran kérdezze le az eszközt (10-300 másodperc, alapértelmezett: 30)
@@ -169,7 +169,7 @@ Ha egy adott mező hiányzik a JSON válaszból:
 
 - Ellenőrizd, hogy a fájlok a megfelelő helyre kerültek-e
 - Indítsd újra a Home Assistant-et
-- Nézd meg a Home Assistant logokat az `ada1status`-hoz kapcsolódó hibák után
+- Nézd meg a Home Assistant logokat az `adap1status`-hoz kapcsolódó hibák után
 
 ### Nem lehet csatlakozni az eszközhöz
 
@@ -192,7 +192,7 @@ Részletes logokhoz adj hozzá a `configuration.yaml` fájlhoz:
 logger:
   default: info
   logs:
-    custom_components.ada1status: debug
+    custom_components.adap1status: debug
 ```
 
 Ezután indítsd újra a Home Assistant-et és nézd meg a logokat.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Simple HTTP server to simulate ADA-P1 Meter responses.
-Use this for testing the Ada1Status integration without a real device.
+Use this for testing the Adap1Status integration without a real device.
 
 Usage:
     python3 examples/mock_server.py

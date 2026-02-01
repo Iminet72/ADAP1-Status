@@ -1,1 +1,1 @@
-"""Tests for Ada1Status integration."""
+"""Tests for Adap1Status integration."""

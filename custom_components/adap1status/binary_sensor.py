@@ -1,4 +1,4 @@
-"""Binary sensor platform for Ada1Status integration."""
+"""Binary sensor platform for Adap1Status integration."""
 from __future__ import annotations
 
 import logging
@@ -12,7 +12,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import Ada1StatusDataUpdateCoordinator
+from . import Adap1StatusDataUpdateCoordinator
 from .const import DOMAIN, DEFAULT_NAME, BINARY_SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,8 +23,8 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Ada1Status binary sensors from a config entry."""
-    coordinator: Ada1StatusDataUpdateCoordinator = hass.data[DOMAIN][
+    """Set up Adap1Status binary sensors from a config entry."""
+    coordinator: Adap1StatusDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ]
     
@@ -32,19 +32,19 @@ async def async_setup_entry(
     
     # Add binary sensors
     for sensor_key in BINARY_SENSOR_TYPES:
-        entities.append(Ada1StatusBinarySensor(coordinator, sensor_key, config_entry))
+        entities.append(Adap1StatusBinarySensor(coordinator, sensor_key, config_entry))
     
     async_add_entities(entities)
 
 
-class Ada1StatusBinarySensor(
-    CoordinatorEntity[Ada1StatusDataUpdateCoordinator], BinarySensorEntity
+class Adap1StatusBinarySensor(
+    CoordinatorEntity[Adap1StatusDataUpdateCoordinator], BinarySensorEntity
 ):
-    """Representation of an Ada1Status binary sensor."""
+    """Representation of an Adap1Status binary sensor."""
     
     def __init__(
         self,
-        coordinator: Ada1StatusDataUpdateCoordinator,
+        coordinator: Adap1StatusDataUpdateCoordinator,
         sensor_key: str,
         config_entry: ConfigEntry,
     ) -> None:

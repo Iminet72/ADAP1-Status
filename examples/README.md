@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains example scripts and utilities for testing the Ada1Status integration.
+This directory contains example scripts and utilities for testing the Adap1Status integration.
 
 ## Mock Server
 

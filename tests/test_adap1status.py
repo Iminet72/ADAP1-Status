@@ -1,4 +1,4 @@
-"""Tests for the Ada1Status integration."""
+"""Tests for the Adap1Status integration."""
 from __future__ import annotations
 
 from unittest.mock import AsyncMock, patch
@@ -11,12 +11,12 @@ from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
-from custom_components.ada1status import (
-    Ada1StatusDataUpdateCoordinator,
+from custom_components.adap1status import (
+    Adap1StatusDataUpdateCoordinator,
     async_setup_entry,
     async_unload_entry,
 )
-from custom_components.ada1status.const import (
+from custom_components.adap1status.const import (
     DOMAIN,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -80,7 +80,7 @@ async def test_coordinator_successful_update(hass: HomeAssistant, mock_status_da
     """Test coordinator successfully fetches data."""
     from datetime import timedelta
     
-    coordinator = Ada1StatusDataUpdateCoordinator(
+    coordinator = Adap1StatusDataUpdateCoordinator(
         hass, "192.168.1.100", DEFAULT_PORT, timedelta(seconds=DEFAULT_SCAN_INTERVAL)
     )
     
@@ -104,7 +104,7 @@ async def test_coordinator_http_error(hass: HomeAssistant):
     """Test coordinator handles HTTP errors."""
     from datetime import timedelta
     
-    coordinator = Ada1StatusDataUpdateCoordinator(
+    coordinator = Adap1StatusDataUpdateCoordinator(
         hass, "192.168.1.100", DEFAULT_PORT, timedelta(seconds=DEFAULT_SCAN_INTERVAL)
     )
     
@@ -125,7 +125,7 @@ async def test_coordinator_timeout(hass: HomeAssistant):
     """Test coordinator handles timeout errors."""
     from datetime import timedelta
     
-    coordinator = Ada1StatusDataUpdateCoordinator(
+    coordinator = Adap1StatusDataUpdateCoordinator(
         hass, "192.168.1.100", DEFAULT_PORT, timedelta(seconds=DEFAULT_SCAN_INTERVAL)
     )
     
@@ -147,7 +147,7 @@ async def test_setup_entry(hass: HomeAssistant, mock_config_entry, mock_status_d
     mock_response.status = 200
     mock_response.json = AsyncMock(return_value=mock_status_data)
     
-    with patch("custom_components.ada1status.async_get_clientsession") as mock_session:
+    with patch("custom_components.adap1status.async_get_clientsession") as mock_session:
         mock_session.return_value.get.return_value.__aenter__.return_value = mock_response
         
         with patch(
@@ -159,7 +159,7 @@ async def test_setup_entry(hass: HomeAssistant, mock_config_entry, mock_status_d
             assert mock_config_entry.entry_id in hass.data[DOMAIN]
             assert isinstance(
                 hass.data[DOMAIN][mock_config_entry.entry_id],
-                Ada1StatusDataUpdateCoordinator,
+                Adap1StatusDataUpdateCoordinator,
             )
             mock_forward.assert_called_once()
 
@@ -183,9 +183,9 @@ async def test_unload_entry(hass: HomeAssistant, mock_config_entry):
 async def test_sensor_availability_on_error(hass: HomeAssistant, mock_config_entry):
     """Test that sensors become unavailable when coordinator fails."""
     from datetime import timedelta
-    from custom_components.ada1status.sensor import Ada1StatusTextSensor
+    from custom_components.adap1status.sensor import Adap1StatusTextSensor
     
-    coordinator = Ada1StatusDataUpdateCoordinator(
+    coordinator = Adap1StatusDataUpdateCoordinator(
         hass, "192.168.1.100", DEFAULT_PORT, timedelta(seconds=DEFAULT_SCAN_INTERVAL)
     )
     
@@ -193,7 +193,7 @@ async def test_sensor_availability_on_error(hass: HomeAssistant, mock_config_ent
     coordinator.last_update_success = False
     coordinator.data = None
     
-    sensor = Ada1StatusTextSensor(coordinator, "hostname", mock_config_entry)
+    sensor = Adap1StatusTextSensor(coordinator, "hostname", mock_config_entry)
     
     assert sensor.available is False
     assert sensor.native_value is None
@@ -203,9 +203,9 @@ async def test_sensor_availability_on_error(hass: HomeAssistant, mock_config_ent
 async def test_binary_sensor_value_conversion(hass: HomeAssistant, mock_config_entry):
     """Test binary sensor value conversion."""
     from datetime import timedelta
-    from custom_components.ada1status.binary_sensor import Ada1StatusBinarySensor
+    from custom_components.adap1status.binary_sensor import Adap1StatusBinarySensor
     
-    coordinator = Ada1StatusDataUpdateCoordinator(
+    coordinator = Adap1StatusDataUpdateCoordinator(
         hass, "192.168.1.100", DEFAULT_PORT, timedelta(seconds=DEFAULT_SCAN_INTERVAL)
     )
     
@@ -225,7 +225,7 @@ async def test_binary_sensor_value_conversion(hass: HomeAssistant, mock_config_e
         coordinator.data = {"mqtt_connected": value}
         coordinator.last_update_success = True
         
-        sensor = Ada1StatusBinarySensor(coordinator, "mqtt_connected", mock_config_entry)
+        sensor = Adap1StatusBinarySensor(coordinator, "mqtt_connected", mock_config_entry)
         
         assert sensor.is_on == expected, f"Failed for value: {value}"
 

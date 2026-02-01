@@ -1,4 +1,4 @@
-# Ada1Status Integration - Implementation Summary
+# Adap1Status Integration - Implementation Summary
 
 ## Overview
 
@@ -6,10 +6,10 @@ This repository contains a complete Home Assistant custom integration for the AD
 
 ## What's Included
 
-### Core Integration Files (`custom_components/ada1status/`)
+### Core Integration Files (`custom_components/adap1status/`)
 
 1. **manifest.json** - Integration metadata
-   - Domain: `ada1status`
+   - Domain: `adap1status`
    - Version: 1.0.0
    - Config flow enabled
    - No external dependencies
@@ -171,7 +171,7 @@ Potential improvements for future versions:
 
 ```
 adaP1Status/
-├── custom_components/ada1status/    # Main integration (453 lines)
+├── custom_components/adap1status/    # Main integration (453 lines)
 ├── examples/                         # Testing tools (73 lines)
 ├── *.md                              # Documentation (8 files)
 └── .gitignore                        # Git configuration
@@ -183,7 +183,7 @@ Total JSON: ~150 lines
 
 ## Installation
 
-Users can install by copying `custom_components/ada1status/` to their Home Assistant config directory and restarting.
+Users can install by copying `custom_components/adap1status/` to their Home Assistant config directory and restarting.
 
 ## Support
 

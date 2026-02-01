@@ -1,4 +1,4 @@
-"""Sensor platform for Ada1Status integration."""
+"""Sensor platform for Adap1Status integration."""
 from __future__ import annotations
 
 import logging
@@ -12,7 +12,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import Ada1StatusDataUpdateCoordinator
+from . import Adap1StatusDataUpdateCoordinator
 from .const import (
     DOMAIN,
     DEFAULT_NAME,
@@ -28,8 +28,8 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Ada1Status sensors from a config entry."""
-    coordinator: Ada1StatusDataUpdateCoordinator = hass.data[DOMAIN][
+    """Set up Adap1Status sensors from a config entry."""
+    coordinator: Adap1StatusDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ]
     
@@ -37,21 +37,21 @@ async def async_setup_entry(
     
     # Add text sensors
     for sensor_key in TEXT_SENSOR_TYPES:
-        entities.append(Ada1StatusTextSensor(coordinator, sensor_key, config_entry))
+        entities.append(Adap1StatusTextSensor(coordinator, sensor_key, config_entry))
     
     # Add numeric sensors
     for sensor_key in NUMERIC_SENSOR_TYPES:
-        entities.append(Ada1StatusNumericSensor(coordinator, sensor_key, config_entry))
+        entities.append(Adap1StatusNumericSensor(coordinator, sensor_key, config_entry))
     
     async_add_entities(entities)
 
 
-class Ada1StatusTextSensor(CoordinatorEntity[Ada1StatusDataUpdateCoordinator], SensorEntity):
-    """Representation of an Ada1Status text sensor."""
+class Adap1StatusTextSensor(CoordinatorEntity[Adap1StatusDataUpdateCoordinator], SensorEntity):
+    """Representation of an Adap1Status text sensor."""
     
     def __init__(
         self,
-        coordinator: Ada1StatusDataUpdateCoordinator,
+        coordinator: Adap1StatusDataUpdateCoordinator,
         sensor_key: str,
         config_entry: ConfigEntry,
     ) -> None:
@@ -95,12 +95,12 @@ class Ada1StatusTextSensor(CoordinatorEntity[Ada1StatusDataUpdateCoordinator], S
         return self.coordinator.last_update_success
 
 
-class Ada1StatusNumericSensor(CoordinatorEntity[Ada1StatusDataUpdateCoordinator], SensorEntity):
-    """Representation of an Ada1Status numeric sensor."""
+class Adap1StatusNumericSensor(CoordinatorEntity[Adap1StatusDataUpdateCoordinator], SensorEntity):
+    """Representation of an Adap1Status numeric sensor."""
     
     def __init__(
         self,
-        coordinator: Ada1StatusDataUpdateCoordinator,
+        coordinator: Adap1StatusDataUpdateCoordinator,
         sensor_key: str,
         config_entry: ConfigEntry,
     ) -> None:

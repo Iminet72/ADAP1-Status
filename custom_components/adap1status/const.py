@@ -1,4 +1,4 @@
-"""Constants for the Ada1Status integration."""
+"""Constants for the Adap1Status integration."""
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.const import (
@@ -9,7 +9,7 @@ from homeassistant.const import (
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
 )
 
-DOMAIN = "ada1status"
+DOMAIN = "adap1status"
 DEFAULT_NAME = "ADA-P1 Meter"
 DEFAULT_SCAN_INTERVAL = 30
 DEFAULT_PORT = 8989

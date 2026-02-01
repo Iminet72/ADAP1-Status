@@ -1,6 +1,6 @@
-# Contributing to Ada1Status
+# Contributing to Adap1Status
 
-Thank you for your interest in contributing to the Ada1Status Home Assistant integration!
+Thank you for your interest in contributing to the Adap1Status Home Assistant integration!
 
 ## Development Setup
 
@@ -42,7 +42,7 @@ When adding new sensor types or features:
 
 To add a new language:
 
-1. Create a new JSON file in `custom_components/ada1status/translations/`
+1. Create a new JSON file in `custom_components/adap1status/translations/`
 2. Use the two-letter language code (e.g., `de.json` for German)
 3. Copy the structure from `en.json`
 4. Translate all strings
@@ -52,7 +52,7 @@ To add a new language:
 When reporting issues, please include:
 
 - Home Assistant version
-- Ada1Status integration version
+- Adap1Status integration version
 - Error messages from the logs
 - Steps to reproduce the issue
 - Device information (if relevant)
