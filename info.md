@@ -1,4 +1,4 @@
-## Ada1Status - ADA-P1 Meter Integration
+## Adap1Status - ADA-P1 Meter Integration
 
 Monitor your ADA-P1 Meter device through Home Assistant.
 
@@ -18,7 +18,7 @@ Monitor your ADA-P1 Meter device through Home Assistant.
 
 1. Go to **Settings** → **Devices & Services**
 2. Click **+ Add Integration**
-3. Search for **Ada1Status**
+3. Search for **Adap1Status**
 4. Enter your ADA-P1 Meter IP address
 5. Click **Submit**
 

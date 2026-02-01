@@ -12,19 +12,19 @@
 
 1. **Download the Integration**
    - Download or clone this repository
-   - Locate the `custom_components/ada1status` folder
+   - Locate the `custom_components/adap1status` folder
 
 2. **Copy to Home Assistant**
    - Navigate to your Home Assistant configuration directory (where `configuration.yaml` is located)
    - If it doesn't exist, create a `custom_components` directory
-   - Copy the entire `ada1status` folder into `custom_components`
+   - Copy the entire `adap1status` folder into `custom_components`
    
    Your directory structure should look like:
    ```
    homeassistant/
    ├── configuration.yaml
    └── custom_components/
-       └── ada1status/
+       └── adap1status/
            ├── __init__.py
            ├── config_flow.py
            ├── const.py
@@ -43,7 +43,7 @@
 4. **Add the Integration**
    - Go to Settings → Devices & Services
    - Click the "+ ADD INTEGRATION" button (bottom right)
-   - Search for "Ada1Status"
+   - Search for "Adap1Status"
    - Click on it to start the configuration
 
 5. **Configure the Device**
@@ -86,7 +86,7 @@ After successful installation, the following sensors will be available:
 
 - Make sure you copied the files to the correct location
 - Restart Home Assistant again
-- Check the Home Assistant logs for any errors related to `ada1status`
+- Check the Home Assistant logs for any errors related to `adap1status`
 
 ### Cannot connect to device
 
@@ -107,7 +107,7 @@ After successful installation, the following sensors will be available:
 To see detailed logs for this integration:
 
 1. Go to Settings → System → Logs
-2. Search for "ada1status"
+2. Search for "adap1status"
 3. Look for any error or warning messages
 
 Or enable debug logging by adding to `configuration.yaml`:
@@ -116,7 +116,7 @@ Or enable debug logging by adding to `configuration.yaml`:
 logger:
   default: info
   logs:
-    custom_components.ada1status: debug
+    custom_components.adap1status: debug
 ```
 
 Then restart Home Assistant and check the logs again.
@@ -124,8 +124,8 @@ Then restart Home Assistant and check the logs again.
 ## Uninstallation
 
 1. Go to Settings → Devices & Services
-2. Find the Ada1Status integration
+2. Find the Adap1Status integration
 3. Click the three dots (⋮) and select "Delete"
 4. Confirm the deletion
-5. (Optional) Remove the `custom_components/ada1status` folder
+5. (Optional) Remove the `custom_components/adap1status` folder
 6. (Optional) Restart Home Assistant

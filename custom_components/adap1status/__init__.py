@@ -1,4 +1,4 @@
-"""The Ada1Status integration."""
+"""The Adap1Status integration."""
 from __future__ import annotations
 
 import logging
@@ -31,12 +31,12 @@ PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Ada1Status from a config entry."""
+    """Set up Adap1Status from a config entry."""
     host = entry.data[CONF_HOST]
     port = entry.data.get(CONF_PORT, DEFAULT_PORT)
     scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     
-    coordinator = Ada1StatusDataUpdateCoordinator(
+    coordinator = Adap1StatusDataUpdateCoordinator(
         hass, host, port, timedelta(seconds=scan_interval)
     )
     
@@ -68,8 +68,8 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-class Ada1StatusDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Class to manage fetching Ada1Status data from JSON API."""
+class Adap1StatusDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
+    """Class to manage fetching Adap1Status data from JSON API."""
     
     def __init__(
         self,

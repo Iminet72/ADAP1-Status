@@ -1,4 +1,4 @@
-"""Pytest configuration for Ada1Status tests."""
+"""Pytest configuration for Adap1Status tests."""
 import pytest
 from unittest.mock import MagicMock
 
