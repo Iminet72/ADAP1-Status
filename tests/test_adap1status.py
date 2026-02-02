@@ -72,6 +72,8 @@ def mock_status_data():
         "rules_loaded": True,
         "chip_cores": 2,
         "ack_items": 0,
+        "payment_amount": 12500,
+        "payment_deadline": "2026-02-15",
     }
 
 
