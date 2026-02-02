@@ -52,6 +52,8 @@ class MockADAP1Handler(BaseHTTPRequestHandler):
                 "rules_loaded": True,
                 "chip_cores": 2,
                 "ack_items": random.randint(0, 5),
+                "payment_amount": random.randint(5000, 25000),
+                "payment_deadline": "2026-02-15",
             }
             
             # Send JSON response

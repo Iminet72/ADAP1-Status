@@ -76,6 +76,7 @@ A sikeres beállítás után a következő entitások jönnek létre:
 - `sensor.ada_p1_meter_ssid` - WiFi hálózat neve (SSID)
 - `sensor.ada_p1_meter_mqtt_server` - MQTT szerver címe
 - `sensor.ada_p1_meter_uptime_hhmm` - Működési idő (ÓÓ:PP formátumban)
+- `sensor.ada_p1_meter_payment_deadline` - Fizetési határidő
 
 ### Numerikus szenzorok
 - `sensor.ada_p1_meter_wifi_rssi` - WiFi jelerősség (dBm)
@@ -92,6 +93,7 @@ A sikeres beállítás után a következő entitások jönnek létre:
 - `sensor.ada_p1_meter_watchdog_last_kick` - Watchdog utolsó aktiválás (milliszekundum)
 - `sensor.ada_p1_meter_chip_cores` - CPU magok száma
 - `sensor.ada_p1_meter_ack_items` - ACK elemek száma
+- `sensor.ada_p1_meter_payment_amount` - Fizetési összeg (Ft)
 
 ### Bináris szenzorok
 - `binary_sensor.ada_p1_meter_mqtt_connected` - MQTT kapcsolat állapota
@@ -138,7 +140,9 @@ Az integráció az ADA-P1 Mérő eszköztől a következő API végpontot várja
   "telegram_url_set": true,
   "rules_loaded": true,
   "chip_cores": 2,
-  "ack_items": 0
+  "ack_items": 0,
+  "payment_amount": 12500,
+  "payment_deadline": "2026-02-15"
 }
 ```
 

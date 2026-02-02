@@ -45,6 +45,10 @@ TEXT_SENSOR_TYPES = {
         "name": "Uptime (HH:MM)",
         "icon": "mdi:clock-outline",
     },
+    "payment_deadline": {
+        "name": "Payment Deadline",
+        "icon": "mdi:calendar-clock",
+    },
 }
 
 # Numeric sensor types
@@ -146,6 +150,13 @@ NUMERIC_SENSOR_TYPES = {
         "device_class": None,
         "state_class": None,
         "icon": "mdi:format-list-numbered",
+    },
+    "payment_amount": {
+        "name": "Payment Amount",
+        "unit": "Ft",
+        "device_class": SensorDeviceClass.MONETARY,
+        "state_class": SensorStateClass.TOTAL,
+        "icon": "mdi:currency-usd",
     },
 }
 
