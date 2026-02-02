@@ -155,7 +155,7 @@ NUMERIC_SENSOR_TYPES = {
         "name": "Payment Amount",
         "unit": "Ft",
         "device_class": None,
-        "state_class": SensorStateClass.TOTAL,
+        "state_class": SensorStateClass.MEASUREMENT,
         "icon": "mdi:cash",
     },
 }
