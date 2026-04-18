@@ -64,21 +64,16 @@ class Adap1StatusTextSensor(CoordinatorEntity[Adap1StatusDataUpdateCoordinator],
         self._attr_name = f"{DEFAULT_NAME} {sensor_info['name']}"
         self._attr_icon = sensor_info["icon"]
         
-        # Get hostname from coordinator data for unique_id and device info
-        hostname = self._get_hostname()
-        self._attr_unique_id = f"{hostname}_{sensor_key}"
+        # Use configured host (fixed IP) for stable unique_id and device identifiers.
+        # Do NOT use values fetched from the device (/status) because they may change per boot.
+        device_id = self._config_entry.data[CONF_HOST]
+        self._attr_unique_id = f"{device_id}_{sensor_key}"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, hostname)},
+            identifiers={(DOMAIN, device_id)},
             name=DEFAULT_NAME,
             manufacturer="ADA",
             model="ADA-P1Meter",
         )
-    
-    def _get_hostname(self) -> str:
-        """Get hostname from coordinator data or fall back to host."""
-        if self.coordinator.data and "hostname" in self.coordinator.data:
-            return str(self.coordinator.data["hostname"])
-        return self._config_entry.data[CONF_HOST]
     
     @property
     def native_value(self) -> str | None:
@@ -116,21 +111,16 @@ class Adap1StatusNumericSensor(CoordinatorEntity[Adap1StatusDataUpdateCoordinato
         self._attr_state_class = sensor_info["state_class"]
         self._attr_icon = sensor_info["icon"]
         
-        # Get hostname from coordinator data for unique_id and device info
-        hostname = self._get_hostname()
-        self._attr_unique_id = f"{hostname}_{sensor_key}"
+        # Use configured host (fixed IP) for stable unique_id and device identifiers.
+        # Do NOT use values fetched from the device (/status) because they may change per boot.
+        device_id = self._config_entry.data[CONF_HOST]
+        self._attr_unique_id = f"{device_id}_{sensor_key}"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, hostname)},
+            identifiers={(DOMAIN, device_id)},
             name=DEFAULT_NAME,
             manufacturer="ADA",
             model="ADA-P1Meter",
         )
-    
-    def _get_hostname(self) -> str:
-        """Get hostname from coordinator data or fall back to host."""
-        if self.coordinator.data and "hostname" in self.coordinator.data:
-            return str(self.coordinator.data["hostname"])
-        return self._config_entry.data[CONF_HOST]
     
     @property
     def native_value(self) -> float | int | None:
