@@ -71,7 +71,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Adap1Status."""
 
-    VERSION = 1
+    VERSION = 2
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -89,8 +89,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
             else:
-                # Check if already configured
-                await self.async_set_unique_id(user_input[CONF_HOST])
+                # Normalise the host so that e.g. " 192.168.1.1 " and
+                # "192.168.1.1" are treated as the same device.
+                normalised_host = user_input[CONF_HOST].strip().lower()
+                await self.async_set_unique_id(normalised_host)
                 self._abort_if_unique_id_configured()
                 
                 return self.async_create_entry(title=info["title"], data=user_input)

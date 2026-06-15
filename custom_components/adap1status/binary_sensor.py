@@ -6,7 +6,6 @@ from typing import Any
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -58,9 +57,10 @@ class Adap1StatusBinarySensor(
         self._attr_device_class = sensor_info["device_class"]
         self._attr_icon = sensor_info["icon"]
         
-        # Use configured host (fixed IP) for stable unique_id and device identifiers.
-        # Do NOT use values fetched from the device (/status) because they may change per boot.
-        device_id = self._config_entry.data[CONF_HOST]
+        # Use the config entry's entry_id as the stable device/entity identifier.
+        # This is assigned once at setup and never changes, regardless of the
+        # device's network address or any runtime value returned by the device.
+        device_id = self._config_entry.entry_id
         self._attr_unique_id = f"{device_id}_{sensor_key}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, device_id)},
