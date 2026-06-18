@@ -10,6 +10,7 @@ import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
@@ -28,6 +29,53 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR]
+
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Migrate config entry to a newer version.
+
+    Version 1 → 2: device and entity identifiers changed from CONF_HOST to
+    config_entry.entry_id, which is stable across reinstalls and independent
+    of the network address of the device.
+    """
+    _LOGGER.debug(
+        "Migrating Adap1Status config entry from version %s", config_entry.version
+    )
+
+    if config_entry.version == 1:
+        old_device_id = config_entry.data[CONF_HOST]
+        new_device_id = config_entry.entry_id
+
+        # --- Device registry ---
+        device_reg = dr.async_get(hass)
+        device = device_reg.async_get_device(identifiers={(DOMAIN, old_device_id)})
+        if device:
+            device_reg.async_update_device(
+                device.id,
+                new_identifiers={(DOMAIN, new_device_id)},
+            )
+
+        # --- Entity registry ---
+        entity_reg = er.async_get(hass)
+        old_prefix = f"{old_device_id}_"
+        for entity in er.async_entries_for_config_entry(
+            entity_reg, config_entry.entry_id
+        ):
+            if entity.unique_id.startswith(old_prefix):
+                suffix = entity.unique_id[len(old_prefix):]
+                new_unique_id = f"{new_device_id}_{suffix}"
+                entity_reg.async_update_entity(
+                    entity.entity_id,
+                    new_unique_id=new_unique_id,
+                )
+
+        hass.config_entries.async_update_entry(config_entry, version=2)
+        _LOGGER.info(
+            "Successfully migrated Adap1Status config entry '%s' to version 2",
+            config_entry.entry_id,
+        )
+
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

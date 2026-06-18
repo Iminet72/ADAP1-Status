@@ -28,7 +28,7 @@ from custom_components.adap1status.const import (
 def mock_config_entry():
     """Create a mock config entry."""
     return ConfigEntry(
-        version=1,
+        version=2,
         domain=DOMAIN,
         title="ADA-P1 Meter (192.168.1.100)",
         data={
@@ -230,5 +230,73 @@ async def test_binary_sensor_value_conversion(hass: HomeAssistant, mock_config_e
         assert sensor.is_on == expected, f"Failed for value: {value}"
 
 
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+@pytest.mark.asyncio
+async def test_migrate_entry_v1_to_v2(hass: HomeAssistant):
+    """Test migration from config entry version 1 (host-based IDs) to version 2 (entry_id-based)."""
+    from unittest.mock import MagicMock, patch
+    from custom_components.adap1status import async_migrate_entry
+
+    host = "192.168.1.100"
+    entry_id = "test_migrate_entry_id"
+
+    v1_entry = ConfigEntry(
+        version=1,
+        domain=DOMAIN,
+        title=f"ADA-P1 Meter ({host})",
+        data={CONF_HOST: host, CONF_PORT: DEFAULT_PORT},
+        options={},
+        source="user",
+        entry_id=entry_id,
+        unique_id=host,
+    )
+
+    # Simulate a device in the device registry with the old host-based identifier.
+    mock_device = MagicMock()
+    mock_device.id = "mock_device_id"
+
+    mock_device_reg = MagicMock()
+    mock_device_reg.async_get_device.return_value = mock_device
+    mock_device_reg.async_update_device = MagicMock()
+
+    # Simulate an entity in the entity registry with the old host-based unique_id.
+    mock_entity = MagicMock()
+    mock_entity.entity_id = "sensor.ada_p1_meter_hostname"
+    mock_entity.unique_id = f"{host}_hostname"
+
+    mock_entity_reg = MagicMock()
+    mock_entity_reg.async_update_entity = MagicMock()
+
+    with patch(
+        "custom_components.adap1status.dr.async_get",
+        return_value=mock_device_reg,
+    ), patch(
+        "custom_components.adap1status.er.async_get",
+        return_value=mock_entity_reg,
+    ), patch(
+        "custom_components.adap1status.er.async_entries_for_config_entry",
+        return_value=[mock_entity],
+    ), patch.object(
+        hass.config_entries,
+        "async_update_entry",
+    ) as mock_update_entry:
+        result = await async_migrate_entry(hass, v1_entry)
+
+    assert result is True
+
+    # Device identifier should be updated to entry_id-based.
+    mock_device_reg.async_update_device.assert_called_once_with(
+        "mock_device_id",
+        new_identifiers={(DOMAIN, entry_id)},
+    )
+
+    # Entity unique_id should be updated from host-based to entry_id-based.
+    mock_entity_reg.async_update_entity.assert_called_once_with(
+        "sensor.ada_p1_meter_hostname",
+        new_unique_id=f"{entry_id}_hostname",
+    )
+
+    # Config entry version must be bumped to 2.
+    mock_update_entry.assert_called_once_with(v1_entry, version=2)
+
+
+
